@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cek Drillbit Cerebrix</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f6f4;--card:#fff;--text:#0f172a;--muted:#5b6775;--line:#e2e8f0;--green:#0f766e;--green2:#0d9488;--soft:#ecfdf8;--r:18px;--shadow:0 10px 30px rgba(15,23,42,.06)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Plus Jakarta Sans",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+.wrap{max-width:1120px;margin:0 auto;padding:18px 16px 70px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(180deg,var(--green2),var(--green));display:grid;place-items:center;color:#fff;font-weight:800}
+.brand b{display:block;font-size:16px}
+.brand span{font-size:12px;color:var(--muted)}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:12px;color:var(--muted)}
+.layout{display:grid;grid-template-columns:1.4fr .8fr;gap:16px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.topbar{flex-direction:column;align-items:flex-start}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:18px}
+.steps{display:flex;gap:8px;margin-bottom:16px}
+.step{flex:1;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;background:#f8fafc;border:1px solid var(--line);font-size:12px;color:var(--muted)}
+.step.on{background:var(--soft);border-color:#99f6e4;color:var(--green);font-weight:700}
+.step i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:#e2e8f0;font-style:normal;font-size:11px;font-weight:800}
+.step.on i{background:var(--green);color:#fff}
+h2{font-size:18px;margin-bottom:4px}
+.hint{font-size:13px;color:var(--muted);margin-bottom:12px}
+.label{font-size:13px;font-weight:700;margin:12px 0 6px}
+.dropzone{border:1.5px dashed #99f6e4;border-radius:16px;background:linear-gradient(180deg,#f0fdfa,#fff);padding:28px 16px;text-align:center;cursor:pointer;position:relative}
+.dropzone.over{border-color:var(--green);background:#ccfbf1}
+.dropzone input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.dz-icon{width:46px;height:46px;margin:0 auto 8px;border-radius:12px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;color:var(--green)}
+.dz-title{font-weight:700}
+.dz-title span{color:var(--green)}
+.dz-sub{font-size:12px;color:var(--muted);margin-top:4px}
+.file-row{display:none;align-items:center;gap:10px;margin-top:10px;padding:10px;border:1px solid var(--line);border-radius:14px;background:#fff}
+.file-row.show{display:flex}
+.file-ico,.proof-preview{width:52px;height:52px;border-radius:10px;background:var(--soft);border:1px solid #99f6e4;display:grid;place-items:center;flex-shrink:0;overflow:hidden;color:var(--green);font-weight:800;font-size:11px}
+.proof-preview img{width:100%;height:100%;object-fit:cover;display:block}
+.file-meta{flex:1;min-width:0}
+.file-meta b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-meta span{font-size:12px;color:var(--muted)}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:640px){.fields{grid-template-columns:1fr}}
+input,select,textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:11px 12px;font:inherit;background:#fff}
+input:focus,select:focus,textarea:focus{outline:2px solid #99f6e4;border-color:var(--green2)}
+textarea{min-height:80px;resize:vertical}
+.row-actions{display:flex;justify-content:space-between;gap:8px;margin-top:16px}
+.btn{border:0;border-radius:12px;padding:11px 14px;font:inherit;font-weight:700;cursor:pointer}
+.btn-main{background:var(--green);color:#fff}
+.btn-main:hover{background:#115e59}
+.btn-light{background:#fff;border:1px solid var(--line);color:var(--text)}
+.btn-wide{width:100%;margin-top:12px}
+.pay-item{display:flex;gap:10px;align-items:flex-start;padding:12px;border:1px solid var(--line);border-radius:14px;margin-bottom:8px;cursor:pointer;background:#fff}
+.pay-item.active{border-color:var(--green);background:var(--soft)}
+.pay-item b{display:block}
+.pay-item span{font-size:12px;color:var(--muted)}
+.box{display:none;margin-top:8px;padding:12px;border:1px solid var(--line);border-radius:14px;background:#f8fafc}
+.box.show{display:block}
+.qris-img{width:220px;max-width:100%;display:block;margin:8px auto;border-radius:12px;background:#fff;padding:8px}
+.va{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line);font-size:13px}
+.va:last-child{border:0}
+.price{display:flex;justify-content:space-between;padding:8px 0;font-size:14px}
+.price.total{font-weight:800;font-size:18px;color:var(--green);border-top:1px solid var(--line);margin-top:6px;padding-top:10px}
+.side h3{font-size:15px;margin-bottom:8px}
+.side li{font-size:13px;color:var(--muted);margin:0 0 6px 16px}
+.hist{margin-top:12px;font-size:12px;color:var(--muted)}
+.hist div{padding:8px 0;border-top:1px solid var(--line)}
+.toast{position:fixed;right:16px;bottom:16px;background:#0f172a;color:#fff;padding:10px 14px;border-radius:12px;font-size:13px;opacity:0;transform:translateY(8px);transition:.2s;z-index:50;max-width:280px}
+.toast.show{opacity:1;transform:none}
+.toast.ok{background:#065f46}
+.toast.err{background:#9f1239}
+.modal{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;place-items:center;z-index:60;padding:16px}
+.modal.show{display:grid}
+.modal .card{max-width:420px;width:100%}
+.note{font-size:12px;color:var(--muted);background:#fff7ed;border:1px solid #fed7aa;padding:10px 12px;border-radius:12px;margin-top:10px}
+.okline{font-size:13px;color:#065f46;background:var(--soft);border:1px solid #99f6e4;padding:10px 12px;border-radius:12px;margin:10px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand">
+      <div class=""><img src="LOGO.png" alt="Cerebrix" width="40" height="40"></div>
+      
+      <div><b>Cek Drillbit Cerebrix</b><span>Deteksi plagiarisme &amp; konten AI</span></div>
+    </div>
+    <div class="pills">
+      <div class="pill">Rp 10 / kata</div>
+      <div class="pill">Min. Rp 6.000</div>
+      <div class="pill">PDF / DOCX</div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <div>
+      <div class="steps">
+        <div class="step on" id="st1"><i>1</i> Upload</div>
+        <div class="step" id="st2"><i>2</i> Detail</div>
+        <div class="step" id="st3"><i>3</i> Pembayaran</div>
+      </div>
+
+      <section class="card" id="step1">
+        <h2>Upload dokumen</h2>
+        <p class="hint">Unggah PDF atau DOCX. Maks. 25 MB. Jumlah kata dihitung otomatis.</p>
+        <div class="dropzone" id="dropzone">
+          <input id="fileInput" type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+          <div class="dz-icon">
+            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4M8 8l4-4 4 4"/><path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+          </div>
+          <div class="dz-title">Seret file ke sini atau <span>pilih file</span></div>
+          <div class="dz-sub">PDF / DOCX · maks 25 MB</div>
+        </div>
+        <div class="file-row" id="fileRow">
+          <div class="file-ico" id="fileExt">FILE</div>
+          <div class="file-meta"><b id="fileName">—</b><span id="fileInfo">—</span></div>
+          <button class="btn btn-light" type="button" id="changeFile">Ganti</button>
+          <button class="btn btn-light" type="button" id="removeFile">Hapus</button>
+        </div>
+        <div class="row-actions">
+          <span></span>
+          <button class="btn btn-main" type="button" id="toDetail">Lanjut isi data</button>
+        </div>
+      </section>
+
+      <section class="card" id="step2" style="display:none">
+        <h2>Data pemesan</h2>
+        <p class="hint">Data ini ikut terkirim ke WhatsApp admin bersama file.</p>
+        <div class="fields">
+          <div><div class="label">Nama lengkap</div><input id="fullName" placeholder="Nama pemesan"></div>
+          <div><div class="label">WhatsApp</div><input id="whatsapp" placeholder="08xxxxxxxxxx"></div>
+          <div><div class="label">Email</div><input id="email" type="email" placeholder="email@contoh.com"></div>
+          <div><div class="label">Instansi / kampus</div><input id="instansi" placeholder="Opsional"></div>
+          <div>
+            <div class="label">Jenis naskah</div>
+            <select id="docType">
+              <option value="Skripsi">Skripsi</option>
+              <option value="Tesis">Tesis</option>
+              <option value="Disertasi">Disertasi</option>
+              <option value="Jurnal">Jurnal</option>
+              <option value="Artikel">Artikel</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+        </div>
+        <div class="label">Catatan</div>
+        <textarea id="notes" placeholder="Catatan untuk admin, opsional"></textarea>
+        <div class="row-actions">
+          <button class="btn btn-light" type="button" id="back1">Kembali</button>
+          <button class="btn btn-main" type="button" id="toPay">Lanjut pembayaran</button>
+        </div>
+      </section>
+
+      <section class="card" id="step3" style="display:none">
+        <h2>Pembayaran</h2>
+        <p class="hint">Pilih metode, bayar sesuai total, lalu unggah bukti. Order + file langsung diarahkan ke WhatsApp admin.</p>
+        <div class="price"><span>Jumlah kata</span><b id="sumWords">0 kata</b></div>
+        <div class="price total"><span>Total bayar</span><b id="sumTotal">Rp 0</b></div>
+
+        <div class="label">Metode</div>
+        <div class="pay-item active" data-method="qris"><b>QRIS</b><span>Scan sekali, semua e-wallet / mobile banking</span></div>
+        <div class="pay-item" data-method="tf"><b>Transfer bank</b><span>BRI, SEABANK, BCA DIGITAL, BCA</span></div>
+        <div class="pay-item" data-method="ewallet"><b>E-Wallet</b><span>DANA, GoPay, OVO, ShopeePay</span></div>
+
+        <div class="box show" id="qrisBox">
+          <div class="hint">Scan QRIS, bayar <b id="payAmount">Rp 0</b></div>
+          <img class="qris-img" id="qrisPhoto" src="QRIS.jpeg" alt="Poster QRIS CEREBRIX - COURSE" />
+        </div>
+        <div class="box" id="tfBox">
+          <div class="va"><span>BRI<br><b>0598 0100 6902 530</b><br>a.n. MUHAMMAD RIZKY HARDIANA</span><button class="btn btn-light" type="button" data-copy="0598 0100 6902 530">Salin</button></div>
+          <div class="va"><span>SEABANK<br><b>901049031577</b><br>a.n. MUHAMMAD RIZKY HARDIANA</span><button class="btn btn-light" type="button" data-copy="901049031577">Salin</button></div>
+          <div class="va"><span>BCA<br><b>7405424436</b><br>a.n. MUHAMMAD RIZKY HARDIANA</span><button class="btn btn-light" type="button" data-copy="7405424436">Salin</button></div>
+          <div class="va"><span>BCA DIGITAL<br><b>005489773301</b><br>a.n. MUHAMMAD RIZKY HARDIANA</span><button class="btn btn-light" type="button" data-copy="005489773301">Salin</button></div>
+        </div>
+        <div class="box" id="ewBox">
+          <div class="hint">DANA / GoPay / OVO / ShopeePay · bayar <b id="ewAmount">Rp 0</b></div>
+          <div class="va"><span><b>08977921800</b><br>a.n. MUHAMMAD RIZKY HARDIANA</span><button class="btn btn-light" type="button" data-copy="082257777760">Salin</button></div>
+        </div>
+
+        <div class="label" style="margin-top:14px">Upload bukti pembayaran</div>
+        <p class="hint">Foto transfer / screenshot QRIS. JPG, PNG, atau WEBP. Maks. 8 MB. File ini ikut dikirim ke admin.</p>
+        <div class="dropzone" id="proofDropzone">
+          <input id="proofInput" type="file" accept="image/jpeg,image/png,image/webp,image/jpg">
+          <div class="dz-icon">
+            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="16" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="1.5"/><path d="M21 16l-5-5-8 8"/></svg>
+          </div>
+          <div class="dz-title">Seret foto bukti ke sini atau <span>pilih foto</span></div>
+          <div class="dz-sub">JPG / PNG / WEBP · maks 8 MB</div>
+        </div>
+        <div class="file-row" id="proofRow">
+          <div class="proof-preview"><img id="proofImg" alt="Preview bukti pembayaran"></div>
+          <div class="file-meta"><b id="proofName">Preview bukti</b><span id="proofInfo">—</span></div>
+          <button class="btn btn-light" type="button" id="changeProof">Ganti foto</button>
+          <button class="btn btn-light" type="button" id="removeProof">Hapus</button>
+        </div>
+
+        <p class="okline">Setelah konfirmasi, dokumen dan bukti bayar langsung dikirim ke WhatsApp admin yang terhubung. Di HP, pilih WhatsApp saat dialog share muncul. Di komputer, chat admin terbuka otomatis beserta unduhan kedua file.</p>
+        <div class="row-actions">
+          <button class="btn btn-light" type="button" id="back2">Kembali</button>
+          <button class="btn btn-main" type="button" id="confirmPay">Kirim ke WhatsApp Admin</button>
+        </div>
+      </section>
+    </div>
+
+    <aside class="side">
+      <div class="card">
+        <h3>Informasi harga</h3>
+        <ul>
+          <li>Rp 10 per kata</li>
+          <li>Minimum Rp 6.000</li>
+          <li>File PDF atau DOCX, maks 25 MB</li>
+          <li>Hasil diproses admin setelah bukti masuk</li>
+        </ul>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <h3>Cara order</h3>
+        <ul>
+          <li>Upload dokumen</li>
+          <li>Isi data pemesan</li>
+          <li>Bayar via QRIS / transfer / e-wallet</li>
+          <li>Unggah bukti, lalu kirim ke admin</li>
+        </ul>
+        <div class="hist" id="histBox"></div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div class="modal" id="doneModal">
+  <div class="card">
+    <h2>Order siap dikirim ke admin</h2>
+    <p class="hint" style="margin-top:8px">Invoice: <b id="doneInvoice">—</b></p>
+    <p class="okline" id="doneInfo">Chat WhatsApp admin sudah dibuka. File dokumen dan bukti bayar sudah disiapkan untuk dikirim.</p>
+    <p class="note">Di HP, tekan tombol hijau di bawah lalu pilih WhatsApp agar dokumen dan bukti langsung masuk chat. Di komputer, lampirkan 2 file yang baru diunduh ke chat admin, lalu kirim.</p>
+    <button class="btn btn-main btn-wide" type="button" id="shareFiles">Kirim dokumen + bukti ke WhatsApp</button>
+    <button class="btn btn-light btn-wide" type="button" id="openWaAgain">Buka chat admin lagi</button>
+    <button class="btn btn-light btn-wide" type="button" id="closeModal">Selesai</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+const CONFIG = {
+  ADMIN_WA: "6282257777760",
+  PRICE_PER_WORD: 10,
+  MIN_PRICE: 6000,
+  MAX_FILE_MB: 25,
+  MAX_PROOF_MB: 8
+};
+if (window.pdfjsLib) {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+}
+const $ = id => document.getElementById(id);
+const state = { file: null, words: 0, method: "qris", proof: null, proofUrl: "", invoice: "" };
+
+function toast(msg, type) {
+  const el = $("toast");
+  el.textContent = msg;
+  el.className = "toast show " + (type || "");
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => el.classList.remove("show"), 2800);
+}
+function formatNum(n) { return Number(n || 0).toLocaleString("id-ID"); }
+function formatRp(n) { return "Rp " + formatNum(n); }
+function formatSize(b) {
+  if (b < 1024) return b + " B";
+  if (b < 1048576) return (b / 1024).toFixed(1) + " KB";
+  return (b / 1048576).toFixed(2) + " MB";
+}
+function countWords(text) {
+  return (String(text || "").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim().match(/\S+/g) || []).length;
+}
+function calcPrice(words) {
+  return Math.max(CONFIG.MIN_PRICE, (words || 0) * CONFIG.PRICE_PER_WORD);
+}
+function makeInvoice() {
+  const d = new Date();
+  const p = n => String(n).padStart(2, "0");
+  return "CBX-" + d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + "-" + p(d.getHours()) + p(d.getMinutes()) + p(d.getSeconds());
+}
+function goStep(n) {
+  [1, 2, 3].forEach(i => {
+    $("step" + i).style.display = i === n ? "block" : "none";
+    $("st" + i).classList.toggle("on", i === n);
+  });
+  if (n === 3) renderPay();
+}
+function bindDrop(zone, input, onFile) {
+  zone.addEventListener("click", e => { if (e.target !== input) input.click(); });
+  ["dragenter", "dragover"].forEach(ev => zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.add("over"); }));
+  ["dragleave", "drop"].forEach(ev => zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.remove("over"); }));
+  zone.addEventListener("drop", e => { const f = e.dataTransfer.files && e.dataTransfer.files[0]; if (f) onFile(f); });
+  input.addEventListener("change", () => { const f = input.files && input.files[0]; if (f) onFile(f); input.value = ""; });
+}
+
+async function countPdf(file) {
+  const buf = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+  let text = "";
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const tc = await page.getTextContent();
+    text += tc.items.map(it => it.str).join(" ") + " ";
+  }
+  return countWords(text);
+}
+async function countDocx(file) {
+  const zip = await JSZip.loadAsync(file);
+  const xml = await zip.file("word/document.xml").async("string");
+  const text = xml.replace(/<w:tab[^/]*\/>/g, " ").replace(/<\/w:p>/g, "\n").replace(/<w:br[^/]*\/>/g, "\n").replace(/<[^>]+>/g, " ")
+    .replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
+  return countWords(text);
+}
+
+async function acceptFile(file) {
+  const name = file.name || "";
+  const ext = name.split(".").pop().toLowerCase();
+  const ok = ext === "pdf" || ext === "docx" || /pdf/.test(file.type) || /wordprocessingml/.test(file.type);
+  if (!ok) return toast("File harus PDF atau DOCX.", "err");
+  if (file.size > CONFIG.MAX_FILE_MB * 1048576) return toast("Ukuran file maksimal 25 MB.", "err");
+  state.file = file;
+  state.words = 0;
+  $("fileExt").textContent = ext.toUpperCase();
+  $("fileName").textContent = name;
+  $("fileInfo").textContent = formatSize(file.size) + " · menghitung kata...";
+  $("fileRow").classList.add("show");
+  try {
+    const words = ext === "pdf" || /pdf/.test(file.type) ? await countPdf(file) : await countDocx(file);
+    state.words = words;
+    $("fileInfo").textContent = formatSize(file.size) + " · " + formatNum(words) + " kata · " + formatRp(calcPrice(words));
+    toast("File siap. Kata terhitung " + formatNum(words) + ".", "ok");
+  } catch (err) {
+    toast("Gagal menghitung kata. Unggah ulang file.", "err");
+  }
+  renderPay();
+}
+function clearFile() {
+  state.file = null;
+  state.words = 0;
+  $("fileRow").classList.remove("show");
+  renderPay();
+}
+
+function acceptProof(file) {
+  const ok = /image\/(jpeg|jpg|png|webp)/i.test(file.type) || /\.(jpe?g|png|webp)$/i.test(file.name);
+  if (!ok) return toast("Bukti harus JPG, PNG, atau WEBP.", "err");
+  if (file.size > CONFIG.MAX_PROOF_MB * 1048576) return toast("Ukuran bukti maksimal 8 MB.", "err");
+  if (state.proofUrl) URL.revokeObjectURL(state.proofUrl);
+  state.proof = file;
+  state.proofUrl = URL.createObjectURL(file);
+  $("proofImg").src = state.proofUrl;
+  $("proofName").textContent = file.name;
+  $("proofInfo").textContent = formatSize(file.size) + " · siap dikirim ke admin";
+  $("proofRow").classList.add("show");
+  $("proofDropzone").style.display = "none";
+  toast("Bukti pembayaran tersimpan.", "ok");
+}
+function clearProof() {
+  if (state.proofUrl) URL.revokeObjectURL(state.proofUrl);
+  state.proof = null;
+  state.proofUrl = "";
+  $("proofImg").removeAttribute("src");
+  $("proofRow").classList.remove("show");
+  $("proofDropzone").style.display = "";
+}
+
+function renderPay() {
+  const p = calcPrice(state.words);
+  $("sumWords").textContent = formatNum(state.words) + " kata";
+  $("sumTotal").textContent = formatRp(p);
+  $("payAmount").textContent = formatRp(p);
+  $("ewAmount").textContent = formatRp(p);
+  document.querySelectorAll(".pay-item").forEach(el => el.classList.toggle("active", el.dataset.method === state.method));
+  $("qrisBox").classList.toggle("show", state.method === "qris");
+  $("tfBox").classList.toggle("show", state.method === "tf");
+  $("ewBox").classList.toggle("show", state.method === "ewallet");
+}
+
+function methodLabel() {
+  return state.method === "tf" ? "Transfer Bank" : state.method === "ewallet" ? "E-Wallet" : "QRIS";
+}
+function buildWhatsAppMessage() {
+  const inv = state.invoice;
+  const inst = $("instansi").value.trim() || "-";
+  const note = $("notes").value.trim() || "-";
+  return [
+    "Halo Admin Cek Drillbit Cerebrix, saya sudah melakukan pembayaran. Mohon diproses.",
+    "",
+    "*INVOICE:* " + inv,
+    "*NAMA:* " + $("fullName").value.trim(),
+    "*WHATSAPP:* " + $("whatsapp").value.trim(),
+    "*EMAIL:* " + $("email").value.trim(),
+    "*INSTANSI:* " + inst,
+    "*JENIS NASKAH:* " + $("docType").value,
+    "*CATATAN:* " + note,
+    "*FILE DOKUMEN:* " + state.file.name + " (" + formatSize(state.file.size) + ")",
+    "*JUMLAH KATA:* " + formatNum(state.words),
+    "*TOTAL:* " + formatRp(calcPrice(state.words)),
+    "*METODE:* " + methodLabel(),
+    "*BUKTI BAYAR:* " + state.proof.name + " (" + formatSize(state.proof.size) + ")",
+    "*WAKTU:* " + new Date().toLocaleString("id-ID"),
+    "",
+    "File dokumen dan bukti bayar sudah diunduh otomatis di perangkat saya. Saya lampirkan kedua file ini di chat.",
+    "",
+    "Mohon diproses. Terima kasih."
+  ].join("\n");
+}
+function waUrl(text) {
+  return "https://wa.me/" + CONFIG.ADMIN_WA + "?text=" + encodeURIComponent(text);
+}
+function downloadNamed(file, filename) {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(file);
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+function namedOrderFiles() {
+  const inv = state.invoice;
+  const docFile = new File([state.file], inv + "_" + state.file.name, { type: state.file.type || "application/octet-stream" });
+  const proofFile = new File([state.proof], inv + "_bukti_" + state.proof.name, { type: state.proof.type || "image/jpeg" });
+  return [docFile, proofFile];
+}
+async function shareFilesToWhatsApp() {
+  if (!state.file || !state.proof || !state.invoice) return false;
+  const files = namedOrderFiles();
+  const msg = buildWhatsAppMessage();
+  if (navigator.canShare && navigator.canShare({ files })) {
+    try {
+      await navigator.share({ title: "Order " + state.invoice, text: msg, files });
+      toast("Pilih WhatsApp, lalu kirim ke admin.", "ok");
+      return true;
+    } catch (err) {
+      if (err && err.name === "AbortError") return false;
+    }
+  }
+  downloadNamed(files[0], files[0].name);
+  downloadNamed(files[1], files[1].name);
+  window.open(waUrl(msg), "_blank");
+  toast("Chat admin dibuka. Lampirkan 2 file yang diunduh, lalu kirim.", "ok");
+  return false;
+}
+function saveHistory(inv) {
+  try {
+    const rows = JSON.parse(localStorage.getItem("cbx_hist") || "[]");
+    rows.unshift({ inv, name: $("fullName").value.trim(), total: calcPrice(state.words), at: new Date().toISOString(), file: state.file.name, proof: state.proof.name });
+    localStorage.setItem("cbx_hist", JSON.stringify(rows.slice(0, 8)));
+  } catch (e) {}
+  renderHist();
+}
+function renderHist() {
+  let rows = [];
+  try { rows = JSON.parse(localStorage.getItem("cbx_hist") || "[]"); } catch (e) {}
+  $("histBox").innerHTML = rows.length ? "<b style='color:#0f172a'>Order terakhir</b>" + rows.map(r => "<div>" + r.inv + " · " + (r.name || "-") + " · " + formatRp(r.total) + "</div>").join("") : "";
+}
+
+async function confirmPay() {
+  if (!state.file) { goStep(1); return toast("Upload file dokumen dulu.", "err"); }
+  if (!state.words) { goStep(1); return toast("Kata belum terhitung. Unggah ulang file.", "err"); }
+  if (!$("fullName").value.trim() || !$("whatsapp").value.trim() || !$("email").value.trim()) {
+    goStep(2); return toast("Lengkapi nama, WhatsApp, dan email.", "err");
+  }
+  if (!state.proof) {
+    $("proofDropzone").scrollIntoView({ behavior: "smooth", block: "center" });
+    return toast("Upload bukti pembayaran dulu.", "err");
+  }
+  state.invoice = makeInvoice();
+  saveHistory(state.invoice);
+  const msg = buildWhatsAppMessage();
+  const files = namedOrderFiles();
+  let shared = false;
+  if (navigator.canShare && navigator.canShare({ files })) {
+    try {
+      await navigator.share({ title: "Order " + state.invoice, text: msg, files });
+      shared = true;
+    } catch (err) {
+      shared = false;
+    }
+  }
+  if (!shared) {
+    downloadNamed(files[0], files[0].name);
+    downloadNamed(files[1], files[1].name);
+    setTimeout(() => window.open(waUrl(msg), "_blank"), 400);
+  } else {
+    setTimeout(() => window.open(waUrl(msg), "_blank"), 600);
+  }
+  $("doneInvoice").textContent = state.invoice;
+  $("doneInfo").textContent = shared
+    ? "Dokumen dan bukti bayar sudah dikirim lewat menu share. Pastikan tujuan chat adalah admin Cek Drillbit."
+    : "Chat WhatsApp admin sudah dibuka. Dokumen dan bukti bayar sudah diunduh otomatis.";
+  $("doneModal").classList.add("show");
+  toast(shared ? "File ikut terkirim. Pilih chat admin jika belum." : "Order dibuka di WhatsApp admin.", "ok");
+}
+
+bindDrop($("dropzone"), $("fileInput"), acceptFile);
+bindDrop($("proofDropzone"), $("proofInput"), acceptProof);
+$("changeFile").onclick = () => $("fileInput").click();
+$("removeFile").onclick = clearFile;
+$("changeProof").onclick = () => $("proofInput").click();
+$("removeProof").onclick = clearProof;
+$("toDetail").onclick = () => {
+  if (!state.file) return toast("Upload file dokumen dulu.", "err");
+  if (!state.words) return toast("Tunggu perhitungan kata selesai.", "err");
+  goStep(2);
+};
+$("back1").onclick = () => goStep(1);
+$("toPay").onclick = () => {
+  if (!$("fullName").value.trim() || !$("whatsapp").value.trim() || !$("email").value.trim()) {
+    return toast("Lengkapi nama, WhatsApp, dan email.", "err");
+  }
+  goStep(3);
+};
+$("back2").onclick = () => goStep(2);
+$("confirmPay").onclick = confirmPay;
+$("closeModal").onclick = () => $("doneModal").classList.remove("show");
+$("openWaAgain").onclick = () => { if (state.invoice) window.open(waUrl(buildWhatsAppMessage()), "_blank"); };
+$("shareFiles").onclick = () => shareFilesToWhatsApp();
+document.querySelectorAll(".pay-item").forEach(el => {
+  el.onclick = () => { state.method = el.dataset.method; renderPay(); };
+});
+document.querySelectorAll("[data-copy]").forEach(btn => {
+  btn.onclick = () => navigator.clipboard.writeText(btn.dataset.copy).then(() => toast("Nomor disalin.", "ok"));
+});
+renderHist();
+renderPay();
+</script>
+</body>
+</html>
